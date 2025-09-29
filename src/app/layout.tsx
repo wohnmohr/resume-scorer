@@ -21,11 +21,11 @@ export const metadata: Metadata = {
 	authors: [{ name: "Rangeesh Rajagopal" }],
 	icons: {
 		icon: [
-			{ url: "/favicon.svg?v=1", type: "image/svg+xml" },
-			{ url: "/favicon.ico?v=1", sizes: "any" },
+			{ url: "/favicon.svg", type: "image/svg+xml" },
+			{ url: "/favicon.ico", sizes: "any" },
 		],
-		shortcut: "/favicon.ico?v=1",
-		apple: "/favicon.svg?v=1",
+		shortcut: "/favicon.ico",
+		apple: "/favicon.svg",
 	},
 	openGraph: {
 		title: "AI Resume Scorer - Get Your Resume Score Instantly",
@@ -42,9 +42,9 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<head>
-				<link rel="icon" href="/favicon.svg?v=1" type="image/svg+xml" />
-				<link rel="icon" href="/favicon.ico?v=1" sizes="any" />
-				<link rel="shortcut icon" href="/favicon.ico?v=1" />
+				<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+				<link rel="icon" href="/favicon.ico" sizes="any" />
+				<link rel="shortcut icon" href="/favicon.ico" />
 			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
