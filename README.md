@@ -76,30 +76,35 @@ The development server uses Turbopack for faster builds and hot reloading.
 ## API Endpoints
 
 ### `/api/extract-pdf`
+
 - **Method**: POST
 - **Body**: `FormData with PDF file`
 - **Response**: `{ text: string, pageCount: number, characterCount: number, metadata: object }`
 - **Description**: Extracts text content from uploaded PDF files
 
 ### `/api/analyze`
+
 - **Method**: POST
 - **Body**: `{ text: string }`
 - **Response**: `{ score: number, suggestions: string[], hasUsedFreeTier: boolean }`
 - **Description**: Analyzes resume text and provides scoring with suggestions
 
 ### `/api/regenerate`
+
 - **Method**: POST
 - **Body**: `{ text: string }`
 - **Response**: `{ text: string }` (requires premium)
 - **Description**: Generates improved resume content using AI
 
 ### `/api/create-order`
+
 - **Method**: POST
 - **Body**: `{ amount: number }`
 - **Response**: `{ orderId: string, amount: number, currency: string }`
 - **Description**: Creates Razorpay payment order for premium features
 
 ### `/api/verify-payment`
+
 - **Method**: POST
 - **Body**: `{ razorpay_order_id: string, razorpay_payment_id: string, razorpay_signature: string }`
 - **Response**: `{ success: boolean, isPremium: boolean }`
@@ -129,16 +134,19 @@ src/
 ## Key Components
 
 ### FileUploader
+
 - Drag and drop PDF upload
 - File validation
 - Visual feedback for upload states
 
 ### PDFPreview
+
 - PDF rendering using PDF.js
 - Text extraction for analysis
 - Page navigation for multi-page PDFs
 
 ### AnalysisResults
+
 - Score display with visual indicators
 - Suggestion list with actionable items
 - Tabbed interface for analysis vs. improved resume
