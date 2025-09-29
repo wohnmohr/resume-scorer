@@ -97,8 +97,12 @@ export default function Home() {
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center space-x-2">
-							<div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-								<span className="text-white font-bold text-sm">AI</span>
+							<div className="w-8 h-8 rounded-lg flex items-center justify-center">
+								<img
+									src="/favicon.svg"
+									alt="Resume Scorer"
+									className="w-8 h-8"
+								/>
 							</div>
 							<h1 className="text-xl font-bold text-gray-900">Resume Scorer</h1>
 						</div>
@@ -326,8 +330,12 @@ export default function Home() {
 						{/* Brand Section */}
 						<div className="text-center md:text-left">
 							<div className="flex items-center justify-center md:justify-start mb-4">
-								<div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-									<span className="text-white font-bold text-sm">AI</span>
+								<div className="w-8 h-8 rounded-lg flex items-center justify-center">
+									<img
+										src="/favicon.svg"
+										alt="Resume Scorer"
+										className="w-8 h-8"
+									/>
 								</div>
 								<h3 className="text-xl font-bold ml-2">AI Resume Scorer</h3>
 							</div>

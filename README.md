@@ -16,7 +16,7 @@ A micro-SaaS application that uses AI to analyze and improve resumes. Built with
 - **Frontend**: Next.js 15.5.4, React 19.1.0, TypeScript 5, TailwindCSS 4
 - **Backend**: Next.js API Routes
 - **AI**: OpenAI GPT-4 (openai 5.23.1)
-- **PDF Processing**: pdf-parse 1.1.1, pdf-lib 1.17.1
+- **PDF Processing**: pdf2json 3.2.2, pdf-lib 1.17.1
 - **Payments**: Razorpay 2.9.6
 - **File Upload**: react-dropzone 14.3.8
 - **Development**: ESLint 9, Turbopack (Next.js)
