@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
+  baseURL: "https://openrouter.ai/api/v1",
   apiKey: process.env.OPENAI_API_KEY,
 });
 
@@ -12,12 +13,7 @@ interface AnalyzeRequest {
 interface AnalysisResult {
   score: number;
   suggestions: string[];
-  hasUsedFreeTier?: boolean;
 }
-
-// Simple in-memory storage for demo purposes
-// In production, use a proper database
-const userUsage = new Map<string, { count: number; isPremium: boolean }>();
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,23 +26,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get client IP for usage tracking (in production, use proper user identification)
-    const clientIP = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
-
-    // Check if user has used free tier
-    // const userData = userUsage.get(clientIP) || { count: 0, isPremium: false };
-    const userData = { count: 0, isPremium: false };
-
-    if (!userData.isPremium && userData.count >= 1) {
-      return NextResponse.json({
-        error: 'Free tier limit reached. Please upgrade to continue.',
-        hasUsedFreeTier: true
-      }, { status: 402 });
-    }
-
-    // Increment usage count
-    userData.count += 1;
-    userUsage.set(clientIP, userData);
 
     const systemPrompt = `You are a professional recruiter with 10+ years of experience. Analyze the following resume and provide:
 
@@ -69,16 +48,17 @@ Return your response as a JSON object with this exact structure:
   ]
 }
 
-Be constructive and specific in your feedback. Focus on actionable improvements that will help the candidate stand out to recruiters and ATS systems.`;
+Be constructive and specific in your feedback. Focus on actionable improvements that will help the candidate stand out to recruiters and ATS systems and keep it short and simple.`;
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'deepseek/deepseek-chat-v3.1:free',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: `Please analyze this resume:\n\n${text}` }
       ],
       temperature: 0.3,
       max_tokens: 1000,
+      response_format: { type: 'json_object' },
     });
 
     const responseText = completion.choices[0]?.message?.content;
@@ -110,10 +90,7 @@ Be constructive and specific in your feedback. Focus on actionable improvements 
       throw new Error('Analysis must provide exactly 3 suggestions');
     }
 
-    return NextResponse.json({
-      ...analysisResult,
-      hasUsedFreeTier: !userData.isPremium && userData.count > 1
-    });
+    return NextResponse.json(analysisResult);
 
   } catch (error) {
     console.error('Analysis error:', error);
@@ -126,7 +103,7 @@ Be constructive and specific in your feedback. Focus on actionable improvements 
     }
 
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
