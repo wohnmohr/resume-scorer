@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import Script from "next/script";
+import Image from "next/image";
 import FileUploader from "@/components/FileUploader";
 import PDFPreview from "@/components/PDFPreview";
 import AnalysisResults from "@/components/AnalysisResults";
@@ -11,11 +12,20 @@ interface AnalysisResult {
 	suggestions: string[];
 }
 
+interface RoastResult {
+	isRoastable: boolean;
+	roast?: string;
+	roastLevel: "mild" | "medium" | "spicy" | "inferno";
+	reasons: string[];
+}
+
 export default function Home() {
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [extractedText, setExtractedText] = useState<string>("");
 	const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+	const [roast, setRoast] = useState<RoastResult | null>(null);
 	const [isAnalyzing, setIsAnalyzing] = useState(false);
+	const [isRoasting, setIsRoasting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [isPdfProcessing, setIsPdfProcessing] = useState(false);
 	const [showPdfModal, setShowPdfModal] = useState(false);
@@ -23,6 +33,7 @@ export default function Home() {
 	const handleFileSelect = useCallback(async (file: File) => {
 		setSelectedFile(file);
 		setAnalysis(null);
+		setRoast(null);
 		setError(null);
 		setIsPdfProcessing(true);
 		setExtractedText("");
@@ -90,6 +101,38 @@ export default function Home() {
 		}
 	};
 
+	const roastResume = async () => {
+		if (!extractedText) {
+			setError("Please wait for the PDF to finish loading.");
+			return;
+		}
+
+		setIsRoasting(true);
+		setError(null);
+
+		try {
+			const response = await fetch("/api/roast", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ text: extractedText }),
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error || "Roast failed");
+			}
+
+			const result = await response.json();
+			setRoast(result);
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Roast failed");
+		} finally {
+			setIsRoasting(false);
+		}
+	};
+
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
 			{/* Header */}
@@ -98,9 +141,11 @@ export default function Home() {
 					<div className="flex items-center justify-between">
 						<div className="flex items-center space-x-2">
 							<div className="w-8 h-8 rounded-lg flex items-center justify-center">
-								<img
+								<Image
 									src="/favicon.svg"
 									alt="Resume Scorer"
+									width={32}
+									height={32}
 									className="w-8 h-8"
 								/>
 							</div>
@@ -196,6 +241,7 @@ export default function Home() {
 										onClick={() => {
 											setSelectedFile(null);
 											setAnalysis(null);
+											setRoast(null);
 											setError(null);
 											setIsPdfProcessing(false);
 											setExtractedText("");
@@ -231,12 +277,12 @@ export default function Home() {
 								</div>
 							)}
 
-							{extractedText && !isPdfProcessing && (
-								<div className="flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg">
-									<div className="flex items-center space-x-3">
-										<div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+							{extractedText && !isPdfProcessing && !analysis && !roast && (
+								<div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+									<div className="text-center mb-6">
+										<div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
 											<svg
-												className="w-5 h-5 text-blue-600"
+												className="w-6 h-6 text-blue-600"
 												fill="none"
 												stroke="currentColor"
 												viewBox="0 0 24 24"
@@ -249,22 +295,58 @@ export default function Home() {
 												/>
 											</svg>
 										</div>
-										<div>
-											<p className="font-medium text-blue-900">
-												PDF processed successfully
-											</p>
-											<p className="text-sm text-blue-700">
-												{extractedText.length} characters extracted
-											</p>
+										<h3 className="text-xl font-bold text-gray-900 mb-2">
+											PDF Processed Successfully!
+										</h3>
+										<p className="text-gray-600 mb-4">
+											{extractedText.length} characters extracted. Choose how
+											you&apos;d like to proceed:
+										</p>
+									</div>
+
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+										{/* Analyze Option */}
+										<div className="bg-white rounded-lg border-2 border-blue-200 p-6 hover:border-blue-300 transition-colors">
+											<div className="text-center">
+												<div className="text-4xl mb-3">📊</div>
+												<h4 className="text-lg font-semibold text-gray-900 mb-2">
+													Get Professional Analysis
+												</h4>
+												<p className="text-sm text-gray-600 mb-4">
+													Get a detailed score and constructive feedback to
+													improve your resume
+												</p>
+												<button
+													onClick={analyzeResume}
+													disabled={isAnalyzing}
+													className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
+												>
+													{isAnalyzing ? "Analyzing..." : "📊 Analyze Resume"}
+												</button>
+											</div>
+										</div>
+
+										{/* Roast Option */}
+										<div className="bg-white rounded-lg border-2 border-red-200 p-6 hover:border-red-300 transition-colors">
+											<div className="text-center">
+												<div className="text-4xl mb-3">🔥</div>
+												<h4 className="text-lg font-semibold text-gray-900 mb-2">
+													Get a Humorous Roast
+												</h4>
+												<p className="text-sm text-gray-600 mb-4">
+													Get brutally honest (but funny) feedback if your
+													resume has issues
+												</p>
+												<button
+													onClick={roastResume}
+													disabled={isRoasting}
+													className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
+												>
+													{isRoasting ? "Roasting..." : "🔥 Roast Me"}
+												</button>
+											</div>
 										</div>
 									</div>
-									<button
-										onClick={analyzeResume}
-										disabled={isAnalyzing}
-										className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
-									>
-										{isAnalyzing ? "Analyzing..." : "Analyze Resume"}
-									</button>
 								</div>
 							)}
 						</div>
@@ -295,7 +377,141 @@ export default function Home() {
 
 				{/* Analysis Results - Prominently Displayed */}
 				{analysis && (
-					<AnalysisResults analysis={analysis} isAnalyzing={isAnalyzing} />
+					<div>
+						<AnalysisResults analysis={analysis} isAnalyzing={isAnalyzing} />
+						{/* Try Different Analysis Button */}
+						<div className="mt-6 text-center">
+							<button
+								onClick={() => {
+									setAnalysis(null);
+									setRoast(null);
+								}}
+								className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-semibold"
+							>
+								🔄 Try Different Analysis
+							</button>
+						</div>
+					</div>
+				)}
+
+				{/* Roast Results */}
+				{roast && (
+					<div>
+						<div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg shadow-lg p-6 border-2 border-red-200 mb-6">
+							<div className="text-center mb-6">
+								<div className="text-6xl mb-4">🔥</div>
+								<h2 className="text-3xl font-bold text-gray-900 mb-2">
+									{roast.isRoastable
+										? "Resume Roast Results"
+										: "Your Resume is Actually Pretty Good!"}
+								</h2>
+								{roast.isRoastable && (
+									<div className="flex items-center justify-center space-x-2 mb-4">
+										<span
+											className={`px-3 py-1 rounded-full text-sm font-semibold ${
+												roast.roastLevel === "mild"
+													? "bg-yellow-100 text-yellow-800"
+													: roast.roastLevel === "medium"
+													? "bg-orange-100 text-orange-800"
+													: roast.roastLevel === "spicy"
+													? "bg-red-100 text-red-800"
+													: "bg-red-200 text-red-900"
+											}`}
+										>
+											{roast.roastLevel === "mild"
+												? "🌶️ Mild Roast"
+												: roast.roastLevel === "medium"
+												? "🌶️🌶️ Medium Roast"
+												: roast.roastLevel === "spicy"
+												? "🌶️🌶️🌶️ Spicy Roast"
+												: "🌶️🌶️🌶️🌶️ INFERNO ROAST"}
+										</span>
+									</div>
+								)}
+							</div>
+
+							{roast.isRoastable ? (
+								<div className="space-y-6">
+									{/* The Roast */}
+									<div className="bg-white rounded-lg p-6 border border-red-200">
+										<h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+											<span className="mr-2">🎭</span>
+											The Roast
+										</h3>
+										<div className="bg-gray-50 rounded-lg p-4 border-l-4 border-red-500">
+											<p className="text-gray-800 text-lg leading-relaxed font-medium">
+												{roast.roast}
+											</p>
+										</div>
+									</div>
+
+									{/* Reasons */}
+									<div className="bg-white rounded-lg p-6 border border-red-200">
+										<h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+											<span className="mr-2">📋</span>
+											What Got You Roasted
+										</h3>
+										<ul className="space-y-3">
+											{roast.reasons.map((reason, index) => (
+												<li key={index} className="flex items-start space-x-3">
+													<div className="flex-shrink-0 w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+														<span className="text-red-600 text-sm font-semibold">
+															{index + 1}
+														</span>
+													</div>
+													<p className="text-gray-700 leading-relaxed">
+														{reason}
+													</p>
+												</li>
+											))}
+										</ul>
+									</div>
+
+									{/* Constructive Advice */}
+									<div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
+										<h3 className="text-xl font-bold text-blue-900 mb-4 flex items-center">
+											<span className="mr-2">💡</span>
+											But Here&apos;s How to Fix It
+										</h3>
+										<p className="text-blue-800 leading-relaxed">
+											Don&apos;t worry! Getting roasted means there&apos;s room
+											for improvement. Use the regular analysis above to get
+											specific, actionable feedback on how to make your resume
+											shine. Every great resume started somewhere!
+										</p>
+									</div>
+								</div>
+							) : (
+								<div className="bg-green-50 rounded-lg p-6 border border-green-200">
+									<div className="text-center">
+										<div className="text-4xl mb-4">🎉</div>
+										<h3 className="text-xl font-bold text-green-900 mb-2">
+											Congratulations!
+										</h3>
+										<p className="text-green-800 leading-relaxed">
+											Your resume doesn&apos;t have any major issues that
+											warrant a roast! This is actually a good sign - it means
+											your resume is well-structured and professional. Keep up
+											the good work!
+										</p>
+									</div>
+								</div>
+							)}
+						</div>
+
+						{/* Try Different Analysis Button */}
+						<div className="mt-6 text-center">
+							<button
+								onClick={() => {
+									setAnalysis(null);
+									setRoast(null);
+								}}
+								className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-semibold"
+							>
+								🔄 Try Different Analysis
+							</button>
+						</div>
+					</div>
 				)}
 
 				{/* PDF Preview Modal */}
@@ -331,9 +547,11 @@ export default function Home() {
 						<div className="text-center md:text-left">
 							<div className="flex items-center justify-center md:justify-start mb-4">
 								<div className="w-8 h-8 rounded-lg flex items-center justify-center">
-									<img
+									<Image
 										src="/favicon.svg"
 										alt="Resume Scorer"
+										width={32}
+										height={32}
 										className="w-8 h-8"
 									/>
 								</div>
