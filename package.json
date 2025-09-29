@@ -9,11 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@types/pdf-parse": "^1.1.5",
     "next": "15.5.4",
     "openai": "^5.23.1",
     "pdf-lib": "^1.17.1",
-    "pdf-parse": "^1.1.1",
+    "pdf2json": "^3.2.2",
     "razorpay": "^2.9.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",

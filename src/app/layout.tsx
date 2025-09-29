@@ -19,6 +19,14 @@ export const metadata: Metadata = {
 	keywords:
 		"resume scorer, resume analysis, AI resume, job application, resume feedback, resume score",
 	authors: [{ name: "Rangeesh Rajagopal" }],
+	icons: {
+		icon: [
+			{ url: "/favicon.svg?v=1", type: "image/svg+xml" },
+			{ url: "/favicon.ico?v=1", sizes: "any" },
+		],
+		shortcut: "/favicon.ico?v=1",
+		apple: "/favicon.svg?v=1",
+	},
 	openGraph: {
 		title: "AI Resume Scorer - Get Your Resume Score Instantly",
 		description: "Score your resume with quick feedback in seconds",
@@ -34,8 +42,9 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<head>
-				<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-				<link rel="icon" href="/favicon.ico" sizes="any" />
+				<link rel="icon" href="/favicon.svg?v=1" type="image/svg+xml" />
+				<link rel="icon" href="/favicon.ico?v=1" sizes="any" />
+				<link rel="shortcut icon" href="/favicon.ico?v=1" />
 			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
