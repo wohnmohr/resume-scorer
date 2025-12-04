@@ -27,14 +27,14 @@ export default function PDFPreview({ file, isOpen, onClose }: PDFPreviewProps) {
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-			<div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+		<div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+			<div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden border border-slate-200">
 				{/* Modal Header */}
-				<div className="flex items-center justify-between p-4 border-b">
-					<h3 className="text-lg font-semibold text-gray-900">PDF Preview</h3>
+				<div className="flex items-center justify-between p-4 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-indigo-50/30">
+					<h3 className="text-lg font-semibold text-slate-900">PDF Preview</h3>
 					<button
 						onClick={onClose}
-						className="text-gray-400 hover:text-gray-600 transition-colors"
+						className="text-slate-400 hover:text-slate-600 transition-colors hover:bg-slate-100 rounded-lg p-1"
 					>
 						<svg
 							className="w-6 h-6"
@@ -53,12 +53,14 @@ export default function PDFPreview({ file, isOpen, onClose }: PDFPreviewProps) {
 				</div>
 
 				{/* Modal Content */}
-				<div className="p-4 overflow-y-auto max-h-[calc(90vh-80px)]">
+				<div className="p-4 overflow-y-auto max-h-[calc(90vh-80px)] bg-slate-50">
 					{pdfUrl && (
 						<div className="space-y-4">
-							<div className="border rounded-lg overflow-hidden bg-white">
-								<div className="p-2 bg-gray-50 border-b">
-									<p className="text-sm text-gray-600">PDF Preview</p>
+							<div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
+								<div className="p-2 bg-gradient-to-r from-slate-50 to-indigo-50/30 border-b border-slate-200">
+									<p className="text-sm text-slate-600 font-medium">
+										PDF Preview
+									</p>
 								</div>
 								<div className="h-96">
 									<iframe

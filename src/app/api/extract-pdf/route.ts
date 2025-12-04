@@ -112,9 +112,36 @@ export async function POST(request: NextRequest) {
     }
 
     // Clean up the text (remove excessive whitespace, normalize line breaks)
-    const cleanedText = extractedText
-      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-      .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
+    // First, normalize all whitespace characters and remove zero-width characters
+    let cleanedText = extractedText
+      .replace(/\u200B/g, "")             // remove zero-width spaces
+      .replace(/\u00A0/g, " ")            // replace non-breaking spaces with regular spaces
+      .replace(/\u2009|\u200A|\u202F/g, " ") // replace various thin spaces with regular spaces
+      .replace(/\r\n/g, "\n")            // normalize line endings
+      .replace(/\r/g, "\n")              // normalize line endings
+      .replace(/\t/g, " ")                // replace tabs with spaces
+      .replace(/[\u2000-\u200F]/g, "")   // remove various Unicode space characters
+      .replace(/[\u2028-\u2029]/g, "\n"); // normalize line/paragraph separators
+
+    // Fix spacing around punctuation and special characters
+    cleanedText = cleanedText
+      .replace(/\s+([.,!?;:])/g, "$1")    // remove space before punctuation
+      .replace(/([.,!?;:])\s+/g, "$1 ")    // ensure single space after punctuation
+      .replace(/\s+([()])/g, "$1")         // remove space before opening parens
+      .replace(/([()])\s+/g, "$1 ")       // ensure space after closing parens (but not before)
+      .replace(/([()])\s+/g, "$1")        // remove space after opening parens
+      .replace(/\s+([()])/g, " $1");      // ensure space before closing parens
+
+    // Normalize dates and common patterns
+    cleanedText = cleanedText
+      .replace(/(\d{1,2})\s*[-/]\s*(\d{1,2})\s*[-/]\s*(\d{4})/g, "$1/$2/$3") // normalize dates MM/DD/YYYY
+      .replace(/(\d{4})\s*[-/]\s*(\d{1,2})\s*[-/]\s*(\d{1,2})/g, "$1/$2/$3") // normalize dates YYYY/MM/DD
+      .replace(/(\w)\s+-\s+(\w)/g, "$1 - $2") // normalize dashes between words
+      .replace(/\s+([-–—])\s+/g, " $1 ")     // normalize various dash types with single spaces
+      .replace(/\s+/g, " ")                  // collapse multiple spaces to single space
+      .replace(/\n\s+/g, "\n")               // remove leading spaces on new lines
+      .replace(/\s+\n/g, "\n")               // remove trailing spaces before newlines
+      .replace(/\n{3,}/g, "\n\n")            // limit consecutive newlines to max 2
       .trim();
 
     return NextResponse.json({

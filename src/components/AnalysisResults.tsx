@@ -62,10 +62,10 @@ function ConfettiAnimation({ isActive }: { isActive: boolean }) {
 function AchievementBadge({ achievement }: { achievement: Achievement }) {
 	return (
 		<div
-			className={`p-4 rounded-lg border-2 transition-all duration-300 ${
+			className={`p-4 rounded-xl border-2 transition-all duration-300 ${
 				achievement.unlocked
-					? "bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-300 shadow-lg"
-					: "bg-gray-50 border-gray-200 opacity-60"
+					? "bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 shadow-lg"
+					: "bg-slate-50 border-slate-200 opacity-60"
 			}`}
 		>
 			<div className="flex items-center space-x-3">
@@ -77,21 +77,21 @@ function AchievementBadge({ achievement }: { achievement: Achievement }) {
 				<div className="flex-1">
 					<h4
 						className={`font-semibold ${
-							achievement.unlocked ? "text-yellow-800" : "text-gray-500"
+							achievement.unlocked ? "text-amber-800" : "text-slate-500"
 						}`}
 					>
 						{achievement.name}
 					</h4>
 					<p
 						className={`text-sm ${
-							achievement.unlocked ? "text-yellow-700" : "text-gray-400"
+							achievement.unlocked ? "text-amber-700" : "text-slate-400"
 						}`}
 					>
 						{achievement.description}
 					</p>
 				</div>
 				{achievement.unlocked && (
-					<div className="text-yellow-500">
+					<div className="text-amber-500">
 						<svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
 							<path
 								fillRule="evenodd"
@@ -116,22 +116,22 @@ function AnticipationLoader({ step }: { step: number }) {
 	];
 
 	return (
-		<div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg shadow-lg p-8 border border-blue-200">
+		<div className="bg-gradient-to-r from-indigo-50 via-purple-50/50 to-cyan-50 rounded-2xl shadow-xl p-8 border border-indigo-200/50">
 			<div className="text-center">
-				<div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-				<h3 className="text-xl font-bold text-gray-900 mb-2">
+				<div className="animate-spin rounded-full h-16 w-16 border-4 border-indigo-600 border-t-transparent mx-auto mb-4"></div>
+				<h3 className="text-xl font-bold text-slate-900 mb-2">
 					AI Analysis in Progress
 				</h3>
-				<p className="text-gray-600 mb-4">
+				<p className="text-slate-600 mb-4">
 					{messages[step] || "Almost done..."}
 				</p>
-				<div className="w-full bg-gray-200 rounded-full h-2">
+				<div className="w-full bg-slate-200 rounded-full h-2.5">
 					<div
-						className="h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-500"
+						className="h-2.5 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 transition-all duration-500 shadow-sm"
 						style={{ width: `${((step + 1) / messages.length) * 100}%` }}
 					/>
 				</div>
-				<p className="text-sm text-gray-500 mt-2">
+				<p className="text-sm text-slate-500 mt-2">
 					{step + 1} of {messages.length} steps completed
 				</p>
 			</div>
@@ -162,32 +162,34 @@ function LevelSystem({ score }: { score: number }) {
 			: ((score - (currentLevel.level - 1) * 20) / 20) * 100;
 
 	return (
-		<div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
+		<div className="bg-gradient-to-r from-indigo-50 via-purple-50/50 to-cyan-50 rounded-2xl p-6 border border-indigo-200/50 shadow-lg">
 			<div className="text-center mb-4">
 				<div className="text-4xl mb-2">{currentLevel.icon}</div>
-				<h3 className="text-xl font-bold text-gray-900">{currentLevel.name}</h3>
-				<p className="text-sm text-gray-600">Level {currentLevel.level}</p>
+				<h3 className="text-xl font-bold text-slate-900">
+					{currentLevel.name}
+				</h3>
+				<p className="text-sm text-slate-600">Level {currentLevel.level}</p>
 			</div>
 
 			<div className="space-y-2">
-				<div className="flex justify-between text-sm">
-					<span>Progress to next level</span>
-					<span>
+				<div className="flex justify-between text-sm font-medium">
+					<span className="text-slate-700">Progress to next level</span>
+					<span className="text-slate-600">
 						{score}/{nextLevelThreshold}
 					</span>
 				</div>
-				<div className="w-full bg-gray-200 rounded-full h-3">
+				<div className="w-full bg-slate-200 rounded-full h-3">
 					<div
-						className={`h-3 rounded-full transition-all duration-1000 ease-out bg-gradient-to-r ${
+						className={`h-3 rounded-full transition-all duration-1000 ease-out bg-gradient-to-r shadow-sm ${
 							currentLevel.color === "purple"
-								? "from-purple-400 to-purple-600"
+								? "from-purple-500 to-purple-700"
 								: currentLevel.color === "blue"
-								? "from-blue-400 to-blue-600"
+								? "from-indigo-500 to-indigo-700"
 								: currentLevel.color === "green"
-								? "from-green-400 to-green-600"
+								? "from-emerald-500 to-emerald-700"
 								: currentLevel.color === "yellow"
-								? "from-yellow-400 to-yellow-600"
-								: "from-gray-400 to-gray-600"
+								? "from-amber-500 to-amber-700"
+								: "from-slate-400 to-slate-600"
 						}`}
 						style={{ width: `${Math.min(progress, 100)}%` }}
 					/>
@@ -224,9 +226,9 @@ function AnimatedScore({ score }: { score: number }) {
 	}, [score]);
 
 	const getScoreColor = (score: number) => {
-		if (score >= 80) return "text-green-600";
-		if (score >= 60) return "text-yellow-600";
-		return "text-red-600";
+		if (score >= 80) return "text-emerald-600";
+		if (score >= 60) return "text-amber-600";
+		return "text-rose-600";
 	};
 
 	const getScoreLabel = (score: number) => {
@@ -246,10 +248,10 @@ function AnimatedScore({ score }: { score: number }) {
 				>
 					{isAnimating ? animatedScore : score}
 				</div>
-				<div className="text-2xl text-gray-600 font-medium">
+				<div className="text-2xl text-slate-600 font-medium">
 					{getScoreLabel(score)}
 				</div>
-				<div className="text-lg text-gray-500 mt-2">out of 100</div>
+				<div className="text-lg text-slate-500 mt-2">out of 100</div>
 			</div>
 		</div>
 	);
@@ -300,11 +302,11 @@ function SocialSharing({ score, siteUrl }: { score: number; siteUrl: string }) {
 	};
 
 	return (
-		<div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
-			<h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
+		<div className="bg-gradient-to-r from-indigo-50 via-purple-50/50 to-cyan-50 rounded-2xl p-6 border border-indigo-200/50 shadow-lg">
+			<h3 className="text-lg font-semibold text-slate-900 mb-4 text-center">
 				🎉 Share Your Score!
 			</h3>
-			<p className="text-sm text-gray-600 mb-4 text-center">
+			<p className="text-sm text-slate-600 mb-4 text-center">
 				Proud of your resume score? Share it with your network!
 			</p>
 
@@ -312,7 +314,7 @@ function SocialSharing({ score, siteUrl }: { score: number; siteUrl: string }) {
 				<button
 					onClick={() => handleShare("twitter")}
 					disabled={isSharing}
-					className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 text-sm sm:text-base"
+					className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all shadow-sm disabled:opacity-50 text-sm sm:text-base font-medium"
 				>
 					<svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
 						<path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
@@ -323,7 +325,7 @@ function SocialSharing({ score, siteUrl }: { score: number; siteUrl: string }) {
 				<button
 					onClick={() => handleShare("linkedin")}
 					disabled={isSharing}
-					className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition-colors disabled:opacity-50 text-sm sm:text-base"
+					className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-indigo-700 text-white rounded-lg hover:bg-indigo-800 transition-all shadow-sm disabled:opacity-50 text-sm sm:text-base font-medium"
 				>
 					<svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
 						<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
@@ -334,7 +336,7 @@ function SocialSharing({ score, siteUrl }: { score: number; siteUrl: string }) {
 				<button
 					onClick={() => handleShare("facebook")}
 					disabled={isSharing}
-					className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm sm:text-base"
+					className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all shadow-sm disabled:opacity-50 text-sm sm:text-base font-medium"
 				>
 					<svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
 						<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -345,7 +347,7 @@ function SocialSharing({ score, siteUrl }: { score: number; siteUrl: string }) {
 				<button
 					onClick={() => handleShare("whatsapp")}
 					disabled={isSharing}
-					className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 text-sm sm:text-base"
+					className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-all shadow-sm disabled:opacity-50 text-sm sm:text-base font-medium"
 				>
 					<svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
 						<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" />
@@ -359,7 +361,7 @@ function SocialSharing({ score, siteUrl }: { score: number; siteUrl: string }) {
 						<button
 							onClick={() => handleShare("native")}
 							disabled={isSharing}
-							className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 text-sm sm:text-base"
+							className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-all shadow-sm disabled:opacity-50 text-sm sm:text-base font-medium"
 						>
 							<svg
 								className="w-4 h-4"
@@ -520,14 +522,14 @@ export default function AnalysisResults({
 
 			{/* Achievements Modal */}
 			{showAchievements && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-					<div className="bg-white rounded-lg p-6 max-w-md w-full max-h-96 overflow-y-auto">
+				<div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+					<div className="bg-white rounded-2xl p-6 max-w-md w-full max-h-96 overflow-y-auto shadow-2xl border border-slate-200">
 						<div className="text-center mb-4">
 							<div className="text-4xl mb-2">🎉</div>
-							<h3 className="text-xl font-bold text-gray-900">
+							<h3 className="text-xl font-bold text-slate-900">
 								Achievement Unlocked!
 							</h3>
-							<p className="text-gray-600">You&apos;ve earned new badges!</p>
+							<p className="text-slate-600">You&apos;ve earned new badges!</p>
 						</div>
 						<div className="space-y-3">
 							{achievements
@@ -544,7 +546,7 @@ export default function AnalysisResults({
 								setShowAchievements(false);
 								playAchievementSound();
 							}}
-							className="w-full mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+							className="w-full mt-4 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all font-semibold shadow-lg"
 						>
 							Awesome!
 						</button>
@@ -557,16 +559,16 @@ export default function AnalysisResults({
 
 			{/* REVEAL: Dramatic Score Reveal */}
 			{showScoreReveal && (
-				<div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg shadow-lg p-8 border-2 border-green-200 animate-pulse">
+				<div className="bg-gradient-to-r from-emerald-50 via-indigo-50 to-cyan-50 rounded-2xl shadow-xl p-8 border-2 border-emerald-200/50 animate-pulse">
 					<div className="text-center">
 						<div className="text-6xl mb-4">🎯</div>
-						<h2 className="text-3xl font-bold text-gray-900 mb-2">
+						<h2 className="text-3xl font-bold text-slate-900 mb-2">
 							Your Resume Score is...
 						</h2>
-						<div className="text-6xl font-bold text-green-600 mb-4 animate-bounce">
+						<div className="text-6xl font-bold bg-gradient-to-r from-emerald-600 to-indigo-600 bg-clip-text text-transparent mb-4 animate-bounce">
 							{analysis.score}/100
 						</div>
-						<p className="text-lg text-gray-600">
+						<p className="text-lg text-slate-600">
 							{analysis.score >= 80
 								? "Excellent work!"
 								: analysis.score >= 60
@@ -578,9 +580,11 @@ export default function AnalysisResults({
 			)}
 
 			{/* Analysis Results */}
-			<div className="bg-white rounded-lg shadow-lg p-6">
+			<div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-slate-200/50">
 				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-2xl font-bold text-gray-900">Analysis Results</h2>
+					<h2 className="text-2xl font-bold text-slate-900">
+						Analysis Results
+					</h2>
 					{analysis.score >= 80 && (
 						<div className="text-2xl animate-bounce">🎉</div>
 					)}
@@ -608,12 +612,12 @@ export default function AnalysisResults({
 				{/* ACTIONABLE INSIGHTS - Show after reveal */}
 				{showInsights && (
 					<div className="space-y-4">
-						<h3 className="text-lg font-semibold text-gray-900 flex items-center">
+						<h3 className="text-lg font-semibold text-slate-900 flex items-center">
 							<span className="mr-2">💡</span>
 							Actionable Insights
 						</h3>
-						<div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-							<p className="text-sm text-blue-800 font-medium">
+						<div className="bg-gradient-to-r from-indigo-50 to-cyan-50 border border-indigo-200/50 rounded-xl p-4 mb-4 shadow-sm">
+							<p className="text-sm text-indigo-800 font-medium">
 								🎯 <strong>Pro Tip:</strong> These suggestions are ranked by
 								impact. Focus on the first one to see the biggest improvement in
 								your next analysis!
@@ -622,12 +626,12 @@ export default function AnalysisResults({
 						<ul className="space-y-3">
 							{analysis.suggestions.map((suggestion, index) => (
 								<li key={index} className="flex items-start space-x-3">
-									<div className="flex-shrink-0 w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-										<span className="text-blue-600 text-sm font-semibold">
+									<div className="flex-shrink-0 w-7 h-7 bg-gradient-to-br from-indigo-500 to-cyan-500 rounded-full flex items-center justify-center shadow-sm">
+										<span className="text-white text-sm font-semibold">
 											{index + 1}
 										</span>
 									</div>
-									<p className="text-gray-700 leading-relaxed">{suggestion}</p>
+									<p className="text-slate-700 leading-relaxed">{suggestion}</p>
 								</li>
 							))}
 						</ul>
@@ -636,8 +640,8 @@ export default function AnalysisResults({
 			</div>
 
 			{/* Achievements Section */}
-			<div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg shadow-lg p-6 border border-yellow-200">
-				<h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+			<div className="bg-gradient-to-r from-amber-50 via-orange-50/50 to-yellow-50 rounded-2xl shadow-xl p-6 border border-amber-200/50">
+				<h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center">
 					<span className="mr-2">🏆</span>
 					Achievements
 				</h3>
