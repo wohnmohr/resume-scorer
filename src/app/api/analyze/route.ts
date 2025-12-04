@@ -26,17 +26,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get current date to help the model understand what "today" is
+    const currentDate = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
 
     const systemPrompt = `You are a professional recruiter with 10+ years of experience. Analyze the following resume and provide:
 
 1. A score from 0-100 based on:
-   - Content quality and relevance
+   - Content quality and relevance for the specific role mentioned in the resume
    - Structure and formatting
-   - Keywords and ATS optimization
-   - Achievements and impact
+   - Keywords and ATS optimization for the target position
+   - Achievements and impact relevant to the role
    - Overall presentation
 
-2. Three specific, actionable suggestions for improvement
+2. Three specific, actionable suggestions for improvement tailored to the role mentioned in the resume
+
+IMPORTANT: 
+- Look for the target role/position mentioned in the resume (in objective, summary, or job titles) and provide feedback specifically for that role. If no specific role is mentioned, provide general resume feedback.
+- Today's date is ${currentDate}. When analyzing dates in the resume, use this as the reference point. Dates before this date are in the past, and dates after this date are in the future.
 
 Return your response as a JSON object with this exact structure:
 {
@@ -48,10 +58,10 @@ Return your response as a JSON object with this exact structure:
   ]
 }
 
-Be constructive and specific in your feedback. Focus on actionable improvements that will help the candidate stand out to recruiters and ATS systems and keep it short and simple.`;
+Be constructive and specific in your feedback. Focus on actionable improvements that will help the candidate stand out to recruiters and ATS systems for their target role. Keep suggestions short and simple.`;
 
     const completion = await openai.chat.completions.create({
-      model: 'deepseek/deepseek-chat-v3.1:free',
+      model: 'tngtech/deepseek-r1t2-chimera:free',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: `Please analyze this resume:\n\n${text}` }

@@ -38,20 +38,24 @@ export default function FileUploader({
 		<div
 			{...getRootProps()}
 			className={`
-        relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200
+        relative border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-200
         ${
 					isDragActive
-						? "border-blue-500 bg-blue-50"
+						? "border-indigo-500 bg-gradient-to-r from-indigo-50 to-cyan-50 shadow-lg"
 						: isDragReject
-						? "border-red-500 bg-red-50"
-						: "border-gray-300 hover:border-gray-400"
+						? "border-rose-500 bg-gradient-to-r from-rose-50 to-orange-50"
+						: "border-slate-300 hover:border-indigo-400"
 				}
         ${disabled ? "opacity-50 cursor-not-allowed" : ""}
       `}
 		>
 			<input {...getInputProps()} />
 			<div className="space-y-4">
-				<div className="mx-auto w-12 h-12 text-gray-400">
+				<div
+					className={`mx-auto w-14 h-14 ${
+						isDragActive ? "text-indigo-600" : "text-slate-400"
+					}`}
+				>
 					<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							strokeLinecap="round"
@@ -62,15 +66,13 @@ export default function FileUploader({
 					</svg>
 				</div>
 				<div>
-					<p className="text-lg font-medium text-gray-900">
+					<p className="text-lg text-white font-semibold text-slate-900">
 						{isDragActive ? "Drop your resume here" : "Upload your resume"}
 					</p>
-					<p className="text-sm text-gray-500 mt-2">
+					<p className="text-sm text text-slate-600 mt-2">
 						Drag and drop your PDF resume here, or click to browse
 					</p>
-					<p className="text-xs text-gray-400 mt-1">
-						Only PDF files are accepted
-					</p>
+					<p className="text-xs text-white mt-1">Only PDF files are accepted</p>
 				</div>
 			</div>
 		</div>
