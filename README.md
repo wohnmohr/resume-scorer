@@ -209,4 +209,4 @@ MIT License - see LICENSE file for details.
 
 ## Support
 
-For support, email support@airesumereviewer.com or create an issue in the repository.
+For support, email rangees28@gmail.com or create an issue in the repository.
